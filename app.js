@@ -100,7 +100,7 @@ const subjectMap = new Map([
     ["NUM", "Numeracy"], ["HFC", "Hospitality"], ["HFB", "Hospitality"],
     ["GER", "German"], ["DTT", "Digital Product Design"], ["COMM", "Commerce"],
     ["ADP", "Arts Design & Photo"], ["ACM", "Art"], ["SCE", "Enviro"], ["BEA", "Business & Econ"],
-    ["SA1000", "Samoan"]
+    ["SA1000", "Samoan"], ["LRNSUP", "Learning Support"], ["HOME", "Home"]
 ]);
 
 let nextColorIndex = 0;
@@ -186,32 +186,46 @@ function getSubjectDisplay(code) {
 }
 
 function parseCSV(text) {
-    const fields = [];
+    const rows = [];
+    let row = [];
+    let field = '';
     let inQuotes = false;
-    let currentField = '';
-    
+
     for (let i = 0; i < text.length; i++) {
         const char = text[i];
-        if (char === '"') inQuotes = !inQuotes;
-        else if (char === ',' && !inQuotes) {
-            fields.push(currentField.trim());
-            currentField = '';
-        } else if ((char === '\n' || char === '\r') && !inQuotes) {
-            if (currentField !== '') {
-                fields.push(currentField.trim());
-                currentField = '';
+        const next = text[i + 1];
+
+        if (inQuotes) {
+            if (char === '"' && next === '"') {
+                field += '"';
+                i++;
+            } else if (char === '"') {
+                inQuotes = false;
+            } else {
+                field += char;
             }
-        } else currentField += char;
+        } else {
+            if (char === '"') {
+                inQuotes = true;
+            } else if (char === ',') {
+                row.push(field.trim());
+                field = '';
+            } else if (char === '\r' || char === '\n') {
+                row.push(field.trim());
+                field = '';
+                if (row.length > 1 || (row.length === 1 && row[0] !== '')) {
+                    rows.push(row);
+                }
+                row = [];
+                if (char === '\r' && next === '\n') i++;
+            } else {
+                field += char;
+            }
+        }
     }
-    if (currentField !== '') fields.push(currentField.trim());
-
-    // Detect columns from first line (headers)
-    const headerLine = text.split(/\r?\n/)[0];
-    const colCount = (headerLine.match(/,/g) || []).length + 1;
-
-    const rows = [];
-    for (let i = 0; i < fields.length; i += colCount) {
-        rows.push(fields.slice(i, i + colCount));
+    if (field !== '' || row.length > 0) {
+        row.push(field.trim());
+        rows.push(row);
     }
     return rows;
 }
@@ -290,7 +304,7 @@ function renderBatch(students, index, renderId) {
         
         const wrapper = studentDiv.querySelector('.weeks-wrapper');
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        const slots = ['Before School', 'Form', 'Period 1', 'Period 2', 'Interval', 'Period 3', 'Period 4', 'Lunch', 'Period 5'];
+        const slots = ['Before School', 'Form', 'Period 1', 'Period 2', 'Interval', 'Period 3', 'Period 4', 'Lunch', 'Period 5', 'After School'];
         
         wrapper.appendChild(createWeekTable(1, days, slots, student.week1, true));
         wrapper.appendChild(createWeekTable(2, days, slots, student.week2, false));
@@ -308,9 +322,9 @@ function renderBatch(students, index, renderId) {
 
 function getStartTime(day, uiIdx) {
     const times = {
-        'Monday': ['—', '8:15', '9:00', '10:00', '10:50', '11:15', '12:10', '1:00', '1:50'],
-        'Wednesday': ['8:15', '8:15', '9:10', '9:30', '10:25', '10:50', '11:50', '12:45', '1:35'],
-        'Default': ['8:15', '8:15', '8:30', '9:30', '10:25', '10:50', '11:50', '12:45', '1:45']
+        'Monday': ['—', '8:15', '9:00', '10:00', '10:50', '11:15', '12:10', '1:00', '1:50', '3:15'],
+        'Wednesday': ['8:15', '8:15', '9:10', '9:30', '10:25', '10:50', '11:50', '12:45', '1:35', '2:30'],
+        'Default': ['8:15', '8:15', '8:30', '9:30', '10:25', '10:50', '11:50', '12:45', '1:45', '3:15']
     };
     return (times[day] || times['Default'])[uiIdx] || '';
 }
@@ -326,7 +340,7 @@ function createWeekTable(weekNum, days, slots, weekData, showLabels) {
     html += '</tr></thead><tbody>';
     
     slots.forEach((slotName, uiIdx) => {
-        const isCompressed = ['Before School', 'Interval', 'Lunch'].includes(slotName);
+        const isCompressed = ['Before School', 'Interval', 'Lunch', 'After School'].includes(slotName);
         html += `<tr class="${isCompressed ? 'compressed-row' : ''}">`;
         if (showLabels) html += `<td class="period-label">${slotName}</td>`;
         
