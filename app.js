@@ -260,6 +260,7 @@ function renderTimetables(data, filter = '') {
         const row = data[i];
         if (row.length < 5) continue;
         if (query && !row[0].toLowerCase().includes(query)) continue;
+        row._originalIndex = i;
         students.push(row);
     }
 
@@ -291,6 +292,7 @@ function renderBatch(students, index, renderId) {
 
         const studentDiv = document.createElement('div');
         studentDiv.className = 'student-page';
+        studentDiv.dataset.studentIndex = row._originalIndex;
         studentDiv.innerHTML = `
             <div class="student-header">
                 <div class="student-info"><h2>${student.name}</h2></div>
@@ -319,6 +321,29 @@ function renderBatch(students, index, renderId) {
         document.getElementById('statusMessage').textContent = `Showing ${students.length} students.`;
     }
 }
+
+// Global listener for editing
+document.addEventListener('blur', (e) => {
+    if (e.target.classList.contains('editable-cell')) {
+        const cell = e.target;
+        const studentDiv = cell.closest('.student-page');
+        const studentIdx = studentDiv.dataset.studentIndex;
+        const week = cell.dataset.week;
+        const day = cell.dataset.day;
+        const csvIdx = cell.dataset.csvIdx;
+        
+        if (csvIdx === "-1") return; 
+
+        const newValue = cell.innerText.trim();
+        const baseCol = week === '1' ? 4 : 49;
+        const colIdx = baseCol + (parseInt(day) * 9) + parseInt(csvIdx);
+        
+        if (timetableData && timetableData[studentIdx]) {
+            timetableData[studentIdx][colIdx] = newValue;
+            localStorage.setItem('cachedTimetable', JSON.stringify(timetableData));
+        }
+    }
+}, true);
 
 function getStartTime(day, uiIdx) {
     const times = {
@@ -358,9 +383,11 @@ function createWeekTable(weekNum, days, slots, weekData, showLabels) {
             if (slotName === 'Period 4') finishTime = getStartTime(dayName, 7);
             if (slotName === 'Period 5') finishTime = (dayName === 'Wednesday' ? '2:30' : '2:40');
 
+            const editableAttr = isCompressed ? `contenteditable="true" class="class-cell editable-cell" data-week="${weekNum}" data-day="${d}" data-csv-idx="${csvIdx}"` : 'class="class-cell"';
+
             if (cellData) {
                 const parts = cellData.split('-');
-                html += `<td><div class="class-cell" style="background-color: ${bgColor}">
+                html += `<td><div ${editableAttr} style="background-color: ${bgColor}">
                     <span class="time-stamp start">${startTime}</span>
                     ${finishTime ? `<span class="time-stamp finish">${finishTime}</span>` : ''}
                     <span class="class-text">${getSubjectDisplay(parts[1])}</span>
@@ -368,7 +395,7 @@ function createWeekTable(weekNum, days, slots, weekData, showLabels) {
                     <span class="room-text">${parts[2] || ''}</span>
                 </div></td>`;
             } else {
-                html += `<td><div class="class-cell empty">
+                html += `<td><div ${editableAttr.replace('class-cell', 'class-cell empty')}>
                     ${(!isCompressed && startTime && startTime !== '—') ? `<span class="time-stamp start">${startTime}</span>` : ''}
                     ${finishTime ? `<span class="time-stamp finish">${finishTime}</span>` : ''}
                 </div></td>`;

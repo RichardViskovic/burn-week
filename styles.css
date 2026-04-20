@@ -253,6 +253,19 @@ tr.compressed-row .class-cell {
     min-width: 0;
 }
 
+.editable-cell[contenteditable="true"]:hover {
+    cursor: text;
+    outline: 2px solid #3498db;
+    background: rgba(52, 152, 219, 0.05) !important;
+}
+
+.editable-cell[contenteditable="true"]:focus {
+    background: #fff !important;
+    outline: 2px solid #2c3e50;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
 /* Print Overrides */
 @media print {
     @page {
