@@ -1,0 +1,299 @@
+:root {
+    --bg-color: #f5f5f5;
+    --border-color: #e0e0e0;
+    --text-color: #333;
+    --table-bg: #fff;
+    --header-bg: #f8f9fa;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.4;
+}
+
+.header-controls {
+    background: var(--header-bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.import-section {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #666;
+}
+
+.search-container {
+    flex-grow: 1;
+}
+
+#studentSearch {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#printButton, .danger-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#printButton {
+    background: #2c3e50;
+    color: white;
+}
+
+.danger-button {
+    background: #e74c3c;
+    color: white;
+}
+
+#printButton:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.status-message {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.student-page {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    page-break-after: always;
+    max-width: 1400px;
+    margin: 0 auto 40px auto;
+    border: 1px solid #eee;
+}
+
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #eee;
+    padding-bottom: 15px;
+}
+
+.student-info h2 {
+    margin: 0;
+    font-size: 2.2em;
+    letter-spacing: -0.5px;
+    color: #1a1a1a;
+}
+
+.student-meta {
+    text-align: right;
+    font-weight: 500;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.week-title {
+    font-size: 0.9em;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: #f0f0f0;
+    color: #444;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+    table-layout: fixed;
+}
+
+th, td {
+    border: none;
+    padding: 0;
+    text-align: center;
+    vertical-align: stretch;
+}
+
+th {
+    padding: 8px 4px;
+    font-size: 0.85em;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.period-label {
+    width: 90px;
+    font-size: 0.75em;
+    color: #999;
+    text-align: right;
+    padding-right: 10px !important;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+.class-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 70px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.class-text, .teacher-text {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    display: block;
+}
+
+.class-text {
+    font-weight: 800;
+    font-size: 0.95em;
+    color: #111;
+    margin-bottom: 1px;
+    margin-top: 10px;
+}
+
+.teacher-text {
+    font-size: 0.7em;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+tr.compressed-row .class-cell {
+    height: 30px;
+    background-color: #fafafa;
+    border-style: dashed;
+    padding: 0;
+}
+
+.time-stamp {
+    position: absolute;
+    font-size: 0.65em;
+    font-weight: 700;
+    color: rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.4);
+    padding: 1px 4px;
+}
+
+.time-stamp.start {
+    top: 2px;
+    left: 2px;
+    border-radius: 3px;
+}
+
+.time-stamp.finish {
+    bottom: 2px;
+    left: 2px;
+    border-radius: 3px;
+}
+
+.room-text {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7em;
+    font-weight: 800;
+    color: rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.4);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.weeks-wrapper {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.week-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Print Overrides */
+@media print {
+    @page {
+        size: landscape;
+        margin: 10mm;
+    }
+    
+    .no-print, .header-controls, .search-container, .import-section, button { display: none !important; }
+    
+    body { 
+        background: white; 
+        padding: 0;
+        font-size: 10pt;
+    }
+    
+    .student-page {
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        border: none;
+        width: 100%;
+        max-width: none;
+        page-break-after: always;
+    }
+
+    .weeks-wrapper {
+        gap: 10px;
+    }
+
+    .class-cell {
+        height: 65px;
+        border: 1px solid #ddd;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    tr.compressed-row .class-cell {
+        height: 25px;
+    }
+
+    .student-info h2 {
+        font-size: 1.8em;
+    }
+}
